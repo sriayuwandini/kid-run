@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Kid Run</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <h2>Kid Run</h2>
+    <h3>Score : <span id="score">0</span></h3>
+    <audio id="jumpSound" src="sound.jump.mp3" preload="auto"></audio>
+    <div id="board" style="background-position: 0px;">
+        <div id="area">
+            <div id="kid"></div>
+            <div id="kaktus" style="margin-left: 600px"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var isMoving  = true;
+        function setBackgroundMoving(){
+            if(isMoving == true){
+            setTimeout(function(){
+
+                //background berjalan
+                var bg = document.getElementById('board');
+                bg.style.backgroundPosition = (parseInt(bg.style.backgroundPosition.replace('px', ''))-1)+'px';
+
+
+                //update live score
+                document.getElementById('score').innerHTML=
+                parseInt(document.getElementById('score').innerHTML) +1;
+
+                //panggil fungsinya terus menerus (recursive)
+                setBackgroundMoving();
+            },5);
+        }
+        }
+        //inisialisasi fungsi background berjalan
+        setBackgroundMoving();
+
+        function setKaktusMoving() {
+            var kaktus = document.getElementById('kaktus'),
+                kid = document.getElementById('kid');
+
+            setTimeout (function(){
+                kaktus.style.marginLeft = (parseInt(kaktus.style.marginLeft.replace('px', '')) - 1) + 'px';
+            
+
+        if (parseInt(kaktus.style.marginLeft.replace('px', '')) < -100) {
+            kaktus.style.marginLeft = "600px";
+        }
+
+        if(kid.offsetTop + 50 >= kaktus.offsetTop &&
+                 kid.offsetLeft + 50 >= kaktus.offsetLeft &&
+                 kid.offsetTop + 50 <= kaktus.offsetTop + 50 &&
+                 kid.offsetLeft <= kaktus.offsetLeft + 50) {
+                 alert('Game Over, Score anda : ' + document.getElementById('score').innerHTML);
+                 kid.setAttribute('class', 'freeze');
+                 isMoving = false;
+                 }else{
+
+                     //.panggil.fungsinya.terus.menerus.(recursive)     
+                     setKaktusMoving();
+            
+                 }
+
+                 },5);
+
+                }
+        //inisialisasi kaktus bergerak
+        setKaktusMoving();
+
+
+        window.addEventListener('keyup', function(e) {
+
+            //untuk mendektesi tombol atas
+            if(e.keyCode == 32){
+                var jumpSound = document.getElementById('jumpSound');
+                jumpSound.play();
+
+                //setting kid loncat
+                document.getElementById('kid').style.marginTop = "30px";
+                document.getElementById('kid').setAttribute('class','freeze');
+                //kembalikan kid kedarat
+                setTimeout(function(){
+                    document.getElementById('kid').style.marginTop = "170px";
+                    document.getElementById('kid').setAttribute('class','');
+                }, 1000)
+            }
+        });
+
+        let backgroundAudio = new Audio ('audio-effects/audio.mp3');
+        backgroundAudio.loop = true;
+
+        window.addEventListener('load', function(){
+            backgroundAudio.play();
+        });
+
+        window.addEventListener('keydown', function(e) {
+            if (e.code === "Space" && gameOver) {
+                backgroundAudio.pause();
+            }
+        })
+    </script>
+
+</body>
+</html>
